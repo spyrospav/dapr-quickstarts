@@ -15,16 +15,21 @@ import os
 import requests
 import time
 
-dapr_port = os.getenv("DAPR_HTTP_PORT", 3500)
+dapr_port = os.getenv("DAPR_HTTP_PORT", 3000)
 dapr_url = "http://localhost:{}/neworder".format(dapr_port)
 
 n = 0
 while True:
     n += 1
-    message = {"data": {"orderId": n}}
+    message = {"orderId": n}
 
     try:
-        response = requests.post(dapr_url, json=message, timeout=5, headers = {"dapr-app-id": "nodeapp"})
+        response = requests.post(
+            dapr_url, 
+            json=message, 
+            timeout=1, 
+            headers = {"dapr-app-id": "app"}
+        )
         if not response.ok:
             print("HTTP %d => %s" % (response.status_code,
                                      response.content.decode("utf-8")), flush=True)
