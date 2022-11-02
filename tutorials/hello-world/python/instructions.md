@@ -10,7 +10,7 @@ python3 -m pip install fastapi "uvicorn[standard]"
 Open a new terminal and run:
 
 ```sh
-dapr run --app-id app --app-port 3000 --dapr-http-port 3501 bash run_server.sh --config ./components/config.yaml --components-path ./components/
+dapr run --app-id app --app-port 3000 --dapr-http-port 3501 python3 app.py --config ./components/config.yaml --components-path ./components/
 ```
 
 ## Post messages to the service
@@ -18,7 +18,7 @@ dapr run --app-id app --app-port 3000 --dapr-http-port 3501 bash run_server.sh -
 You can send requests to the service by running the following:
 
 ```sh
-curl -X POST -s http://localhost:3000/neworder -H Content-Type:application/json --data @sample.json
+curl -X POST -s http://localhost:3501/neworder -H "Content-Type: application/json" -H "dapr-app-id: pythonapp" -d @sample.json
 ```
 
 You can also run the publisher Python app by running the following command in a new terminal:
@@ -34,5 +34,5 @@ which posts a new `orderId` every second.
 You can retrieve the state by accessing the `order` endpoint by simply running:
 
 ```sh
-curl -X GET -s http://localhost:3000/order -H Content-Type:application/json
+curl -X GET -s http://localhost:3501/order -H "Content-Type: application/json" -H "dapr-app-id: pythonapp"
 ```
