@@ -1,14 +1,7 @@
 import logging
-import requests
-import sys
-import os
 from dapr.clients import DaprClient
-from fastapi import FastAPI
+from fastapi import FastAPI, Body
 from fastapi.encoders import jsonable_encoder
-from pydantic import BaseModel
-
-class Order(BaseModel):
-    orderId: str
 
 DAPR_STORE_NAME = "statestore"
 logging.basicConfig(level = logging.INFO)
@@ -26,12 +19,11 @@ def order():
         return response
 
 @app.post('/neworder', status_code=200)
-def neworder(order: Order):
+def neworder(order: dict):
 
-    _order = jsonable_encoder(order)
-    print("Got a new order! Order ID: {}".format(_order["orderId"]))
-
+    print(order)
+    
     with DaprClient() as client:
-        response = client.save_state(DAPR_STORE_NAME, key="orderId", value=_order["orderId"])
+        client.save_state(DAPR_STORE_NAME, key="orderId", value=order["orderId"])
         print("Persisted state successfully!")
         return 
